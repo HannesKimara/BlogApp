@@ -16,6 +16,32 @@
 
       {% endblock content%}
       
+      {% block footer%}
+      <footer class="page-footer ba-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col l8 m6 s12">
+              <h5 class="white-text">Blog App</h5>
+              <p class="white-text">We have blogs.</p>
+            </div>
+            <div class="col l4 s12">
+              <h5 class="white-text">Navigation</h5>
+              <ul>
+                <li><a class="white-text" href="/">Home</a></li>
+                <li><a class="white-text" href="/blogs">Blogs</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="footer-copyright">
+          <div class="container">
+          © 2020 Copyright hanneskimara
+          <span class = "right">A product by <a class="white-text" href="https://hanneskimara.com" target = "_blank">hanneskimara</a></span>
+          </div>
+        </div>
+      </footer>
+      {% endblock %}
+
       {% block scripts%}
       <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
       <script src="{{ url_for('static', filename='js/script.js') }}"></script>

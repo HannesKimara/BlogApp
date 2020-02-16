@@ -1,7 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class = "">
-    <p class = "center">Index Works</p>
+<div class="valign-wrapper ba-jumbotron">
+    <div class = "container center-align">
+        <h2>The Blog App</h2>
+        <h5 class = "grey-text">Read new Content</h5>
+        <a class="waves-effect waves-light btn-large">TRY IT NOW</a>
+    </div>
+</div>
+<div class = "container">
+    {% for i in range(25) %}
+        <p class = "center">{{ i+1}}. Index Works</p>
+    {% endfor %}
 </div>
 {% endblock content%}
