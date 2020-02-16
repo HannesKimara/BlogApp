@@ -47,6 +47,7 @@ class Blog(db.Model):
         db.session.commit()
         return self.id
 
+    @classmethod
     def get_user_blogs(self, user_id):
         return Blog.query.filter_by(user_id = user_id).all()
 
