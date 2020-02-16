@@ -17,6 +17,7 @@ class DevConfig(Config):
         Config: The parent configuration class with General configuration settings
     '''
     SEND_FILE_MAX_AGE_DEFAULT = 0
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
     DEBUG = True
 
 class ProdConfig(Config):
@@ -28,7 +29,17 @@ class ProdConfig(Config):
     '''
     DEBUG = False
 
+class TestConfig(Config):
+    '''
+    Test configuration child class
+
+    Args:
+        Config: The parent configuration class with General configuration settings
+    '''
+    SQLALCHEMY_DATABASE_URI = os.environ.get("TEST_DATABASE_URI")
+
 config_options = {
     'development': DevConfig,
-    'production': ProdConfig
+    'production': ProdConfig,
+    'test': TestConfig
 }
