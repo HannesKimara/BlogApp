@@ -1,10 +1,11 @@
 from datetime import datetime
 
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
-from . import db
+from . import db, login_manager
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key = True)
@@ -47,8 +48,8 @@ class Blog(db.Model):
         db.session.commit()
         return self.id
 
-    @classmethod
-    def get_user_blogs(self, user_id):
+    @staticmethod
+    def get_user_blogs(user_id):
         return Blog.query.filter_by(user_id = user_id).all()
 
 class Comment(db.Model):
@@ -63,3 +64,7 @@ class Comment(db.Model):
         db.session.add(self)
         db.session.commit()
         return self.id
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
