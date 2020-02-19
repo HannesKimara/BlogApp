@@ -1,15 +1,18 @@
 from flask import render_template, url_for, redirect
 from flask_login import current_user, login_required
+import requests
 
 from . import main
 from .. import db
 from ..models import User, Blog, Comment
-from .forms import NewBlogForm
+from .forms import NewBlogForm, CommentForm
 
 @main.route("/")
 def index():
     all_blogs = Blog.query.order_by(db.desc(Blog.created_at)).limit(15).all()
-    return render_template("index.html", blogs = all_blogs)
+    quote = requests.get('http://quotes.stormconsultancy.co.uk/random.json').json()['quote']
+    print(quote)
+    return render_template("index.html", blogs = all_blogs, quote = quote)
 
 @main.route("/blog/new", methods = ['GET', 'POST'])
 @login_required
@@ -29,7 +32,14 @@ def blog_content(blog_id):
     return render_template('blog.html', blog = curr_blog)
 
 @main.route("/blogs")
+@login_required
 def view_blogs():
-     all_blogs = Blog.query.order_by(db.desc(Blog.created_at)).all()
+    form = CommentForm()
+    if form.validate_on_submit():
+        new_comment = Comment(content = form.content.data, user = current_user)
+        new_comment.save()
+        return redirect(url_for('main.blog_content', blog_id = new_blog_id))
 
-     return render_template("blogs.html", blogs = all_blogs)
+    all_blogs = Blog.query.order_by(db.desc(Blog.created_at)).all()
+    comments = Comment.query.filter_by(user_id = current_user.id).all()
+    return render_template("blogs.html", blogs = all_blogs)
