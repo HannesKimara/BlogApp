@@ -33,21 +33,29 @@ def new_blog():
 
     return render_template("new_blog.html", form = form)
 
-@main.route("/blog/view/<blog_id>")
+@main.route("/blog/view/<blog_id>", methods = ['GET', 'POST'])
 def blog_content(blog_id):
     curr_blog = Blog.query.filter_by(id = blog_id).first()
+    form = CommentForm()
 
-    return render_template('blog.html', blog = curr_blog)
+    if form.validate_on_submit():
+        new_comment = Comment(content = form.comment.data, user = current_user, blog = curr_blog)
+        new_comment.save()
+        return redirect(url_for('main.blog_content', blog_id = blog_id))
+
+    comments = Comment.query.filter_by(user_id = current_user.id).all()
+
+    return render_template('blog.html', blog = curr_blog, form = form, comments = comments)
 
 @main.route("/blogs")
 @login_required
 def view_blogs():
-    form = CommentForm()
-    if form.validate_on_submit():
-        new_comment = Comment(content = form.content.data, user = current_user)
-        new_comment.save()
-        return redirect(url_for('main.blog_content', blog_id = new_blog_id))
-
     all_blogs = Blog.query.order_by(db.desc(Blog.created_at)).all()
-    comments = Comment.query.filter_by(user_id = current_user.id).all()
+    
     return render_template("blogs.html", blogs = all_blogs)
+
+@main.route("/account")
+@login_required
+def profile():
+    user_blogs = Blog.query.filter_by(id = current_user.id).all()
+    return render_template('profile.html', user = current_user, blogs = user_blogs)
