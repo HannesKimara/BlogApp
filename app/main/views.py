@@ -1,4 +1,4 @@
-from flask import render_template, url_for, redirect
+from flask import render_template, url_for, redirect, flash
 from flask_login import current_user, login_required
 import requests
 
@@ -59,3 +59,17 @@ def view_blogs():
 def profile():
     user_blogs = Blog.query.filter_by(id = current_user.id).all()
     return render_template('profile.html', user = current_user, blogs = user_blogs)
+
+@main.route("/blog/delete/<blog_id>")
+@login_required
+def delete_blog(blog_id):
+    to_delete = Blog.query.filter_by(user = current_user, id = blog_id).first()
+    if to_delete:
+        db.session.delete(to_delete)
+        db.session.commit()
+        flash("Blog deleted successfully")
+        return render_template('delete_response.html')
+    else:
+        flash("Blog deletion failed")
+        return render_template('delete_response.html')
+    
