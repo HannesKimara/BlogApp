@@ -6,6 +6,7 @@ from . import main
 from .. import db
 from ..models import User, Blog, Comment
 from .forms import NewBlogForm, CommentForm
+from ..email import mail_message
 
 @main.route("/")
 def index():
@@ -19,8 +20,15 @@ def index():
 def new_blog():
     form = NewBlogForm()
     if form.validate_on_submit():
+        email_list = []
         new_blog = Blog(title = form.title.data, content = form.content.data, user = current_user)
         new_blog_id = new_blog.save()
+
+        all_users = User.query.all()
+        for user in all_users:
+            email_list.append(user.email)
+
+        mail_message("New blog notification","email/welcome_user",user.email, user=user)
         return redirect(url_for('main.blog_content', blog_id = new_blog_id))
 
     return render_template("new_blog.html", form = form)
