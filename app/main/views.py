@@ -57,7 +57,7 @@ def view_blogs():
 @main.route("/account")
 @login_required
 def profile():
-    user_blogs = Blog.query.filter_by(id = current_user.id).all()
+    user_blogs = Blog.query.filter_by(user = current_user).all()
     return render_template('profile.html', user = current_user, blogs = user_blogs)
 
 @main.route("/blog/delete/<blog_id>")
@@ -73,7 +73,7 @@ def delete_blog(blog_id):
         flash("Blog deletion failed")
         return render_template('delete_response.html')
     
-@main.route("/blog/update/<blog_id>")
+@main.route("/blog/update/<blog_id>", methods = ['GET','POST'])
 @login_required
 def update_blog(blog_id):
     form = NewBlogForm()
@@ -81,12 +81,14 @@ def update_blog(blog_id):
 
     if user_change_blog is None:
         return redirect(url_for('main.blog_content', blog_id = blog_id))
-    print(user_change_blog)
+
     if form.validate_on_submit():
         user_change_blog.title = form.title.data
         user_change_blog.content = form.content.data
+        db.session.commit()
 
-        return redirect(url_for('main.update_blog', blog_id = blog_id))
+        return redirect(url_for('main.blog_content', blog_id = blog_id))
 
+    form.content.data = user_change_blog.content
     return render_template('update.html', form = form, blog = user_change_blog)
     

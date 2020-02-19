@@ -20,7 +20,8 @@
             <div class="card-content white-text">
             <span class="card-title black-text">{{blog.title}}</span>
             <p class = "black-text">{{blog.content | truncate(100)}}</p><br>
-            <p class = "black-text">By {{blog.user.username}} at {{blog.created_at}}</p>
+            <p class = "black-text">By {{blog.user.username}}</p>
+            <p class = "black-text">Created at {{blog.created_at.strftime("%m-%d-%Y")}}</p>
             </div>
             <div class="card-action">
             <a href="{{url_for('main.blog_content', blog_id = blog.id)}}">VIEW</a>

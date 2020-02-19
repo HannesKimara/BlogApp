@@ -11,7 +11,7 @@
         <span class = "white-text">{{ message }}</span>
         </div>
     {% endfor %}<br>
-    <form action = "{{ url_for('main.new_blog')}}" method="POST" autocomplete="off">
+    <form action = "{{ url_for('main.update_blog', blog_id = blog.id)}}" method="POST" autocomplete="off">
         <div class="">
         <div class = "input-field">
             {{ form.csrf_token(type_ = "hidden")}}
@@ -22,8 +22,7 @@
         </div>
         <div class = "input-field">
             {{ form.content.label }}
-            {{ form.content(class_ = "materialize-textarea", value=blog.content)}}
-            <p>{{blog.content}}</p>
+            {{ form.content(class_ = "materialize-textarea", data=blog.content)}}
         </div> 
         
         <div class = "input-field">
