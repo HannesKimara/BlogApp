@@ -43,7 +43,7 @@ def blog_content(blog_id):
         new_comment.save()
         return redirect(url_for('main.blog_content', blog_id = blog_id))
 
-    comments = Comment.query.filter_by(user_id = current_user.id).all()
+    comments = Comment.query.filter_by(user_id = current_user.id, blog = curr_blog).all()
 
     return render_template('blog.html', blog = curr_blog, form = form, comments = comments)
 
