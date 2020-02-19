@@ -23,7 +23,9 @@
             <p class = "black-text">By {{blog.user.username}} at {{blog.created_at}}</p>
             </div>
             <div class="card-action">
-            <a href="{{url_for('main.blog_content', blog_id = blog.id)}}">View</a>
+            <a href="{{url_for('main.blog_content', blog_id = blog.id)}}">VIEW</a>
+            <a href="{{url_for('main.update_blog', blog_id = blog.id)}}">UPDATE</a>
+            <a class = "red-text" href="{{url_for('main.delete_blog', blog_id = blog.id)}}">DELETE</a>
             </div>
         </div>
         </a>
@@ -37,5 +39,3 @@
     </div>
 {% endfor %}
 {% endblock content %}
-{% block footer%}
-{% endblock footer %}

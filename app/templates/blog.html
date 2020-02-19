@@ -16,6 +16,7 @@
     {% for comment in comments %}
     <div class = "card-panel">
         <p>{{ comment.content}}</p>
+        <p class = "right-align grey-text"> By {{ comment.user.username }}</p>
     </div>
     {% endfor %}
     {% else %}

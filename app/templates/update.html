@@ -18,11 +18,12 @@
         </div>
         <div class = "input-field">
             {{ form.title.label }}
-            {{ form.title(class_ = "validate", placeholder = "Title")}}
+            {{ form.title(class_ = "validate", placeholder = "Title", value=blog.title)}}
         </div>
         <div class = "input-field">
             {{ form.content.label }}
-            {{ form.content(class_ = "materialize-textarea")}}
+            {{ form.content(class_ = "materialize-textarea", value=blog.content)}}
+            <p>{{blog.content}}</p>
         </div> 
         
         <div class = "input-field">

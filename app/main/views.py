@@ -73,3 +73,20 @@ def delete_blog(blog_id):
         flash("Blog deletion failed")
         return render_template('delete_response.html')
     
+@main.route("/blog/update/<blog_id>")
+@login_required
+def update_blog(blog_id):
+    form = NewBlogForm()
+    user_change_blog = Blog.query.filter_by(user = current_user, id = blog_id).first()
+
+    if user_change_blog is None:
+        return redirect(url_for('main.blog_content', blog_id = blog_id))
+    print(user_change_blog)
+    if form.validate_on_submit():
+        user_change_blog.title = form.title.data
+        user_change_blog.content = form.content.data
+
+        return redirect(url_for('main.update_blog', blog_id = blog_id))
+
+    return render_template('update.html', form = form, blog = user_change_blog)
+    
