@@ -21,11 +21,12 @@
             <span class="card-title black-text">{{blog.title}}</span>
             <p class = "black-text">{{blog.content | truncate(100)}}</p><br>
             <p class = "black-text">By {{blog.user.username}}</p>
-            <p class = "black-text">Created at {{blog.created_at.strftime("%m-%d-%Y")}}</p>
+            <p class = "grey-text">Created {{blog.created_at.strftime("%m-%d-%Y")}}</p>
             </div>
             <div class="card-action">
             <a href="{{url_for('main.blog_content', blog_id = blog.id)}}">VIEW</a>
             <a href="{{url_for('main.update_blog', blog_id = blog.id)}}">UPDATE</a>
+            <a href="{{url_for('main.review_blog', blog_id = blog.id)}}">REVIEW</a>
             <a class = "red-text" href="{{url_for('main.delete_blog', blog_id = blog.id)}}">DELETE</a>
             </div>
         </div>
@@ -34,9 +35,4 @@
     {% endfor %}
     </div>
 </div>
-{% for message in get_flashed_messages() %}
-    <div class="card-panel red">
-    <span class = "white-text">{{ message }}</span>
-    </div>
-{% endfor %}
 {% endblock content %}

@@ -11,8 +11,11 @@ from ..email import mail_message
 @main.route("/")
 def index():
     all_blogs = Blog.query.order_by(db.desc(Blog.created_at)).limit(15).all()
-    quote = requests.get('http://quotes.stormconsultancy.co.uk/random.json').json()['quote']
-    print(quote)
+    try:
+        quote = requests.get('http://quotes.stormconsultancy.co.uk/random.json').json()['quote']
+    except Exception:
+        quote = ""
+  
     return render_template("index.html", blogs = all_blogs, quote = quote)
 
 @main.route("/blog/new", methods = ['GET', 'POST'])
@@ -34,6 +37,7 @@ def new_blog():
     return render_template("new_blog.html", form = form)
 
 @main.route("/blog/view/<blog_id>", methods = ['GET', 'POST'])
+@login_required
 def blog_content(blog_id):
     curr_blog = Blog.query.filter_by(id = blog_id).first()
     form = CommentForm()
@@ -43,12 +47,11 @@ def blog_content(blog_id):
         new_comment.save()
         return redirect(url_for('main.blog_content', blog_id = blog_id))
 
-    comments = Comment.query.filter_by(user_id = current_user.id, blog = curr_blog).all()
+    comments = Comment.query.filter_by(blog = curr_blog).all()
 
     return render_template('blog.html', blog = curr_blog, form = form, comments = comments)
 
 @main.route("/blogs")
-@login_required
 def view_blogs():
     all_blogs = Blog.query.order_by(db.desc(Blog.created_at)).all()
     
@@ -92,3 +95,25 @@ def update_blog(blog_id):
     form.content.data = user_change_blog.content
     return render_template('update.html', form = form, blog = user_change_blog)
     
+@main.route("/comment/delete/<comment_id>", methods = ['GET','POST'])
+@login_required
+def delete_comment(comment_id):
+    blog_owner = Comment.query.filter_by(id = comment_id).first().blog.user
+    to_delete = Comment.query.filter_by(id = comment_id).first()
+
+    if to_delete.blog.user == blog_owner:
+        db.session.delete(to_delete)
+        db.session.commit()
+        flash("Comment deleted successfully")
+        return redirect(url_for('main.review_blog', blog_id = to_delete.blog_id))
+    else:
+        flash("Comment deletion failed")
+        return redirect(url_for('main.profile'))
+
+@main.route("/blog/review/<blog_id>", methods = ['GET', 'POST'])
+@login_required
+def review_blog(blog_id):
+    curr_blog = Blog.query.filter_by(user = current_user).first()
+    user_blog_comments = Comment.query.filter_by(blog_id = blog_id).all()
+
+    return render_template('review_blog.html', comments = user_blog_comments)
